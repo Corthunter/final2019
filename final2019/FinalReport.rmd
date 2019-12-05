@@ -1,0 +1,129 @@
+---
+title: "Aids Drug"
+author: "Cortajha Hunter"
+date: "12/4/2019"
+output: html_document
+---
+
+```{r include=FALSE,echo=FALSE}
+require(tidyverse)
+require(tigerstats)
+avast <-read.csv(file="avastivironal.csv",header=TRUE)
+attach(avast)
+```
+
+# Introduction
+
+<!--In this section you explain what you are trying to show.  Where did the data come from?  What is the research or other question you are trying to answer?.  If you skimp in this section expect to be marked down in your grade. Paint a picture of the project a couple of paragraphs is expected!-->
+
+A new  preventative aides (abacavirinol) is under test in clinical trials. Analyze the effectiveness of this drug across the board. Consider population subgroups by gender, drug use, and sexual orientation.Next, we will conduct an evaluation of drugs efficicacy for all of the pateints. Following behind that, we conduct an evaluation specifically for the women. After both evaluations are complete, we are going to conduct one more evaluation of drugs efficacy specifically for the males. Finally, we evaluate an drug efficacy specifically for the patients who consumes drugs, following that, an efficacy for the LBGTQ.
+
+# Methods
+
+<!--Decide on your methods:  use "variable analysis" or other appropriate descriptors.  Make sure to choose at least one graphical method and at least one numerical method. Discuss what data manipulations may be needed for example subsetting or other binning procedures and what sort of graphical displays and inferential tools will be used!--> 
+
+There are a total of five test, which are all categorical. Was the vaccine affective for each of the five categories?
+
+#Results
+
+<!--Divide this section into two sub-sections:  One for your descriptive  results and one for your inferential results.!-->
+
+Question 1: Is the vaccine effective?
+
+$H_0$ The vaccine affects if one was to come in contacts with aids
+
+$H_0$ The vaccine has no effect
+
+The vaccine affects poeple only if they came in contact with aids, and if one have not came in contact with aids then the vaccine has absolutely no affect. 
+
+```{r}
+all=xtabs(~infected+treatment, data=avast)
+rowPerc(all)
+```
+
+This chart specifys that people that took the placebo had a higher percentage than the people that took the drug.  
+
+```{r}
+chisqtestGC(all, data= avast)
+```
+
+By the P-Value failing to have any value, we must reject this chart because the it shows in the chi-square statisics that the drug(13.06) infected more that the placebo (12.40).
+
+## Descriptive Results
+
+### Graphical Descriptive Results
+
+<!--Graphical results here.  Make sure to show your code.  Provide appropriate labels for axes, giving units if possible, and provide a good title for the graph, too.  Use the graphical results to describe the patterns if any that exist in the data as focused toward the research question. Bottom line is to explain the features of the graph that are relevant to conforming or departing to what is expected by your null hypothesis !-->
+
+```{r}
+barchartGC(~infected+treatment,type="percent",main="all")
+```
+The people with aids were least affected by the drug and more affected by the plcebo. Wheres the people without aids were affected by both the drug and the pleacebo, greatly. 
+
+```{r}
+barchartGC(~infected+treatment, data=filter(avast, sex=='gal'), main='women only', type='percent')
+```
+The women with aids were greatly affected by the placebo, while they were least affected by the drug. Women without aids were evenly affected by the drug and and placebo. 
+
+```{r}
+barchartGC(~infected+treatment, data=filter(avast, sex=='guy'), main='men only', type='percent')
+```
+The men with aids were greatly affected by the drug and slightly less when it came to the placebo. While men without aids were both closely affected the drug and the placebo. 
+
+```{r}
+barchartGC(~infected+treatment, data=filter(avast, sex=='gal'), main='DrugUsers', type='percent')
+horizontal=TRUE
+```
+Drug users with aids were least affect by the drug, while there were greatly affected by the placebo. Finally, people without aids were both evenly affected by both the drug and the placebo. 
+
+```{r}
+barchartGC(~infected+treatment,main= 'LGBTQ', type='percent', data=filter(avast, LGBTQ=='gay'),
+Horizontal=TRUE)
+```
+This chart shows that the people with aids are more likely to be affected by the drugs. 
+
+### Numerical Descriptive Results
+
+<!--Numerical results go here. Use the numerical results to describe the patterns if any that exist in the data as focused toward the research question!-->
+
+```{r}
+all=xtabs(~infected+treatment)
+print(all)
+```
+During the treatment, more patients that were affected with aids has a higher percentage when they used the placebos, than the people who were using the drug. While the number of pateints without aids were closely related in the drug and plaebo, both being high numbers.  
+
+
+```{r}
+women=xtabs(~infected+treatment, data=filter(avast,sex=='gal'))
+print(women)
+```
+During the treatment, more pateints were infected by the placebo that the drug. 
+
+```{r}
+Men=xtabs(~infected+treatment, data=filter(avast,sex=='guy'))
+print(Men)
+```
+During the treatment, more patients were affected by the drug that the placebo. 
+
+```{r}
+DrugUsers=xtabs(~infected+treatment,data=filter(avast, sex=='Drugusers'))
+print(DrugUsers)
+```
+During the treatment, no one was affected by the drug nor the placebo. 
+
+```{r}
+LGBTQ=xtabs(~infected+treatment,data=filter(avast, sex=='LGBTQ'))
+print(LGBTQ)
+```
+During the treatment, no one was affected by the drug nor the placebo.
+
+## Inferential Results
+
+<!--State hypothesis clearly.  Make sure your discussion of the inferential test covers all the aspects that the test output produces, such as test statistic, p-value etc.  Make a decision about the null hypothesis, explain the assumptions on which the selected test/procedure was based, and why the chosen procedure satisfys the assumptions and is appropriate to answer the research question!-->
+
+
+# Discussion and Conclusion
+
+<!--Discussion and conclusion here.  If you found a relationship be sure to consider whether the relationship occurs because one of the variavbles causes the other, or whether they perhasps are related for some other reason.  Watch the chapter 6 videos from the GeorgeTown videos collection.!-->
+
+  We reject the null hypothesis and conclude that we have eveidence to support that the drugusers that are on drugs are more likely to contract aids. 
